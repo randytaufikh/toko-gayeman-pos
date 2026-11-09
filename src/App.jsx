@@ -87,7 +87,7 @@ export default function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Semua');
   const [isManageOpen, setIsManageOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('menu'); // 'menu' atau 'cart' khusus tampilan mobile
+  const [activeTab, setActiveTab] = useState('menu');
   
   const receiptRef = useRef();
 
@@ -200,11 +200,14 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-800 flex flex-col pb-16 md:pb-0">
-      {/* HEADER */}
+      {/* HEADER DENGAN LOGO */}
       <header className="bg-blue-600 text-white p-4 shadow-md flex justify-between items-center sticky top-0 z-20">
-        <div>
-          <h1 className="text-lg md:text-xl font-bold">TOKO GAYEMAN.QU</h1>
-          <p className="text-[11px] text-blue-100">Bukit Ayana Ciomas Blok B2/30</p>
+        <div className="flex items-center gap-3">
+          <img src="/logo.png" alt="Logo Toko" className="w-10 h-10 object-contain rounded-full bg-white p-0.5 shadow" />
+          <div>
+            <h1 className="text-lg md:text-xl font-bold">TOKO GAYEMAN.QU</h1>
+            <p className="text-[11px] text-blue-100">Bukit Ayana Ciomas Blok B2/30</p>
+          </div>
         </div>
         <button
           onClick={() => setIsManageOpen(true)}
@@ -214,7 +217,7 @@ export default function App() {
         </button>
       </header>
 
-      {/* MOBILE TAB SWITCHER (Hanya tampil di HP) */}
+      {/* MOBILE TAB SWITCHER */}
       <div className="md:hidden flex bg-white border-b border-slate-200 sticky top-[65px] z-10 shadow-sm">
         <button
           onClick={() => setActiveTab('menu')}
@@ -242,7 +245,7 @@ export default function App() {
       {/* MAIN CONTAINER */}
       <div className="flex-1 flex flex-col md:flex-row p-3 md:p-4 gap-4 max-w-7xl mx-auto w-full">
         
-        {/* KIRI: KATALOG PRODUK (List View dengan Scroll Super Lancar) */}
+        {/* KIRI: KATALOG PRODUK */}
         <div className={`flex-1 flex-col gap-3 ${activeTab === 'menu' ? 'flex' : 'hidden md:flex'}`}>
           <div className="flex gap-2">
             <input
@@ -271,7 +274,7 @@ export default function App() {
             ))}
           </div>
 
-          {/* List Produk (Area Scroll Luas dan Nyaman di HP) */}
+          {/* List Produk */}
           <div className="flex flex-col gap-2.5 overflow-y-auto max-h-[calc(100vh-220px)] md:max-h-[70vh] pr-1 overscroll-contain">
             {filteredProducts.length === 0 ? (
               <div className="text-center py-12 text-slate-400 bg-white rounded-xl border border-dashed border-slate-300 p-6">
@@ -438,10 +441,11 @@ export default function App() {
         </div>
       )}
 
-      {/* HIDDEN RECEIPT COMPONENT UNTUK DOWNLOAD GAMBAR */}
+      {/* HIDDEN RECEIPT COMPONENT DENGAN LOGO */}
       <div style={{ position: 'absolute', top: '-9999px', left: '-9999px' }}>
         <div ref={receiptRef} style={{ width: '380px', padding: '24px', background: '#ffffff', fontFamily: 'monospace', color: '#000' }}>
           <div style={{ textAlign: 'center', marginBottom: '16px' }}>
+            <img src="/logo.png" alt="Logo" style={{ width: '48px', height: '48px', objectFit: 'contain', margin: '0 auto 8px auto', display: 'block' }} />
             <h2 style={{ fontSize: '18px', fontWeight: 'bold', margin: '0' }}>TOKO GAYEMAN.QU</h2>
             <p style={{ fontSize: '11px', margin: '4px 0' }}>Bukit Ayana Ciomas Blok B2/30</p>
             <p style={{ fontSize: '10px', color: '#555', margin: '0' }}>----------------------------------------</p>
