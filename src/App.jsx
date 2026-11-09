@@ -194,7 +194,13 @@ export default function App() {
     const image = canvas.toDataURL('image/png');
     const a = document.createElement('a');
     a.href = image;
-    a.download = `Struk-GayemanQu-${Date.now()}.png`;
+
+    // Nama file struk otomatis menggunakan nama customer
+    const safeCustomerName = customerName.trim() 
+      ? customerName.trim().replace(/[^a-zA-Z0-9]/g, '_') 
+      : 'Umum';
+
+    a.download = `Struk_${safeCustomerName}_${Date.now()}.png`;
     a.click();
   };
 
@@ -474,7 +480,7 @@ export default function App() {
             <span>Rp {totalAmount.toLocaleString('id-ID')}</span>
           </div>
           <div style={{ textAlign: 'center', fontSize: '10px', color: '#555' }}>
-            <p style={{ margin: '0' }}>Terima kasih sudah berbelanja di TOKO GAYEMAN.QU!</p>
+            <p style={{ margin: '0' }}>Terima kasih sudah berbelanja via online!</p>
             <p style={{ margin: '2px 0' }}>Pesanan Anda akan segera disiapkan & dikirim.</p>
           </div>
         </div>
