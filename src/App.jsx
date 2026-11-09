@@ -87,6 +87,7 @@ export default function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Semua');
   const [isManageOpen, setIsManageOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('menu'); // 'menu' atau 'cart' khusus tampilan mobile
   
   const receiptRef = useRef();
 
@@ -125,6 +126,7 @@ export default function App() {
   };
 
   const totalAmount = cart.reduce((sum, item) => sum + (Number(item.price) || 0) * (Number(item.qty) || 0), 0);
+  const totalItemsCount = cart.reduce((sum, item) => sum + (Number(item.qty) || 0), 0);
 
   const categories = ['Semua', ...new Set(products.map((p) => p.category))];
 
@@ -197,42 +199,68 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-800 flex flex-col">
+    <div className="min-h-screen bg-slate-100 text-slate-800 flex flex-col pb-16 md:pb-0">
       {/* HEADER */}
-      <header className="bg-blue-600 text-white p-4 shadow-md flex justify-between items-center">
+      <header className="bg-blue-600 text-white p-4 shadow-md flex justify-between items-center sticky top-0 z-20">
         <div>
-          <h1 className="text-xl font-bold">TOKO GAYEMAN.QU</h1>
-          <p className="text-xs text-blue-100">Bukit Ayana Ciomas Blok B2/30</p>
+          <h1 className="text-lg md:text-xl font-bold">TOKO GAYEMAN.QU</h1>
+          <p className="text-[11px] text-blue-100">Bukit Ayana Ciomas Blok B2/30</p>
         </div>
         <button
           onClick={() => setIsManageOpen(true)}
-          className="bg-blue-700 hover:bg-blue-800 text-sm px-3 py-2 rounded-lg font-medium transition shadow cursor-pointer"
+          className="bg-blue-700 hover:bg-blue-800 text-xs md:text-sm px-3 py-2 rounded-lg font-medium transition shadow cursor-pointer"
         >
-          ⚙️ Pengaturan Menu
+          ⚙️ Pengaturan
         </button>
       </header>
 
+      {/* MOBILE TAB SWITCHER (Hanya tampil di HP) */}
+      <div className="md:hidden flex bg-white border-b border-slate-200 sticky top-[65px] z-10 shadow-sm">
+        <button
+          onClick={() => setActiveTab('menu')}
+          className={`flex-1 py-3 text-center font-bold text-sm transition cursor-pointer ${
+            activeTab === 'menu' ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50/50' : 'text-slate-500'
+          }`}
+        >
+          📋 Pilih Menu ({products.length})
+        </button>
+        <button
+          onClick={() => setActiveTab('cart')}
+          className={`flex-1 py-3 text-center font-bold text-sm transition cursor-pointer relative ${
+            activeTab === 'cart' ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50/50' : 'text-slate-500'
+          }`}
+        >
+          🛒 Keranjang
+          {totalItemsCount > 0 && (
+            <span className="absolute top-2 right-6 bg-red-500 text-white text-[10px] px-1.5 py-0.2 rounded-full font-bold">
+              {totalItemsCount}
+            </span>
+          )}
+        </button>
+      </div>
+
       {/* MAIN CONTAINER */}
-      <div className="flex-1 flex flex-col md:flex-row p-4 gap-4 max-w-7xl mx-auto w-full">
-        {/* KIRI: KATALOG PRODUK (LIST VIEW) */}
-        <div className="flex-1 flex flex-col gap-4">
-          <div className="flex flex-col sm:flex-row gap-2">
+      <div className="flex-1 flex flex-col md:flex-row p-3 md:p-4 gap-4 max-w-7xl mx-auto w-full">
+        
+        {/* KIRI: KATALOG PRODUK (List View dengan Scroll Super Lancar) */}
+        <div className={`flex-1 flex-col gap-3 ${activeTab === 'menu' ? 'flex' : 'hidden md:flex'}`}>
+          <div className="flex gap-2">
             <input
               type="text"
               placeholder="Cari menu Racikin..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="flex-1 p-2.5 border border-slate-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              className="flex-1 p-3 border border-slate-300 rounded-xl bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
             />
           </div>
 
           {/* Kategori Filter */}
-          <div className="flex gap-2 overflow-x-auto pb-1">
+          <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
+                className={`px-3.5 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
                   selectedCategory === cat
                     ? 'bg-blue-600 text-white shadow'
                     : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
@@ -243,10 +271,10 @@ export default function App() {
             ))}
           </div>
 
-          {/* List Produk (Bentuk Baris Memanjang ke Bawah) */}
-          <div className="flex flex-col gap-2 overflow-y-auto max-h-[60vh] pr-1">
+          {/* List Produk (Area Scroll Luas dan Nyaman di HP) */}
+          <div className="flex flex-col gap-2.5 overflow-y-auto max-h-[calc(100vh-220px)] md:max-h-[70vh] pr-1 overscroll-contain">
             {filteredProducts.length === 0 ? (
-              <div className="text-center py-10 text-slate-400 bg-white rounded-xl border border-dashed border-slate-300 p-6">
+              <div className="text-center py-12 text-slate-400 bg-white rounded-xl border border-dashed border-slate-300 p-6">
                 <p className="font-medium text-sm">Menu tidak ditemukan.</p>
               </div>
             ) : (
@@ -256,19 +284,23 @@ export default function App() {
                   <div
                     key={p.id}
                     onClick={() => addToCart(p)}
-                    className="bg-white p-3 rounded-xl border border-slate-200 shadow-sm hover:shadow-md cursor-pointer transition flex justify-between items-center active:scale-[0.99]"
+                    className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md cursor-pointer transition flex justify-between items-center active:scale-[0.98]"
                   >
                     <div className="flex flex-col gap-1 pr-2">
                       <span className="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded font-medium w-fit">
                         {p.category}
                       </span>
-                      <h3 className="font-semibold text-sm text-slate-800">{p.name}</h3>
+                      <h3 className="font-bold text-sm text-slate-800">{p.name}</h3>
                     </div>
-                    <div className="text-right">
-                      <div className="text-blue-600 font-bold text-sm">
-                        Rp {pPrice.toLocaleString('id-ID')}
+                    <div className="text-right flex items-center gap-3">
+                      <div>
+                        <div className="text-blue-600 font-bold text-sm">
+                          Rp {pPrice.toLocaleString('id-ID')}
+                        </div>
                       </div>
-                      <span className="text-[10px] text-slate-400 font-medium">+ Tambah</span>
+                      <span className="bg-blue-600 text-white text-xs px-2.5 py-1.5 rounded-lg font-bold shadow-sm">
+                        +
+                      </span>
                     </div>
                   </div>
                 );
@@ -278,11 +310,11 @@ export default function App() {
         </div>
 
         {/* KANAN: KERANJANG & KASIR */}
-        <div className="w-full md:w-96 bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+        <div className={`w-full md:w-96 bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex-col justify-between ${activeTab === 'cart' ? 'flex' : 'hidden md:flex'}`}>
           <div>
             <h2 className="font-bold text-base mb-3 border-b pb-2 text-slate-700">🛒 Keranjang Belanja</h2>
             
-            <div className="flex flex-col gap-2 mb-3">
+            <div className="flex flex-col gap-2.5 mb-3">
               <div>
                 <label className="text-xs text-slate-500 font-medium block mb-1">Nama Pelanggan:</label>
                 <input
@@ -290,7 +322,7 @@ export default function App() {
                   placeholder="Nama Pembeli (Opsional)"
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
-                  className="w-full p-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
               <div>
@@ -300,7 +332,7 @@ export default function App() {
                   placeholder="Contoh: 08123456789 (Opsional)"
                   value={customerPhone}
                   onChange={(e) => setCustomerPhone(e.target.value)}
-                  className="w-full p-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
@@ -308,18 +340,18 @@ export default function App() {
             {/* List Item Keranjang */}
             <div className="flex flex-col gap-2 max-h-[30vh] overflow-y-auto pr-1">
               {cart.length === 0 ? (
-                <p className="text-center text-slate-400 text-xs py-6">Keranjang masih kosong. Pilih menu di samping.</p>
+                <p className="text-center text-slate-400 text-xs py-10">Keranjang masih kosong. Pilih menu di tab sebelah.</p>
               ) : (
                 cart.map((item) => {
                   const itemPrice = Number(item.price) || 0;
                   const itemQty = Number(item.qty) || 0;
                   return (
-                    <div key={item.id} className="flex justify-between items-center bg-slate-50 p-2 rounded-lg border border-slate-100 text-sm">
+                    <div key={item.id} className="flex justify-between items-center bg-slate-50 p-2.5 rounded-lg border border-slate-100 text-sm">
                       <div className="flex-1 pr-2">
                         <p className="font-medium text-xs line-clamp-1">{item.name}</p>
                         <p className="text-xs text-blue-600 font-semibold">Rp {(itemPrice * itemQty).toLocaleString('id-ID')}</p>
                       </div>
-                      <div className="flex items-center gap-1.5 bg-white border border-slate-200 rounded-md px-1.5 py-0.5">
+                      <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-md px-2 py-1">
                         <button onClick={() => updateQty(item.id, -1)} className="text-slate-500 font-bold px-1 hover:text-red-600 cursor-pointer">-</button>
                         <span className="text-xs font-bold w-4 text-center">{itemQty}</span>
                         <button onClick={() => updateQty(item.id, 1)} className="text-slate-500 font-bold px-1 hover:text-blue-600 cursor-pointer">+</button>
@@ -341,25 +373,26 @@ export default function App() {
             <div className="flex flex-col gap-2">
               <button
                 onClick={handleDirectSendWhatsApp}
-                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-lg font-medium text-sm transition shadow flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold text-sm transition shadow flex items-center justify-center gap-2 cursor-pointer active:scale-98"
               >
                 🚀 Kirim Langsung via WhatsApp
               </button>
               <button
                 onClick={handleCopyWhatsApp}
-                className="w-full bg-slate-700 hover:bg-slate-800 text-white py-2 rounded-lg font-medium text-xs transition shadow flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full bg-slate-700 hover:bg-slate-800 text-white py-2.5 rounded-xl font-medium text-xs transition shadow flex items-center justify-center gap-2 cursor-pointer"
               >
                 📋 Salin Teks Saja
               </button>
               <button
                 onClick={handleSaveReceiptImage}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium text-xs transition shadow flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl font-medium text-xs transition shadow flex items-center justify-center gap-2 cursor-pointer"
               >
                 📥 Simpan Struk as Gambar
               </button>
             </div>
           </div>
         </div>
+
       </div>
 
       {/* MODAL PENGATURAN MENU */}
