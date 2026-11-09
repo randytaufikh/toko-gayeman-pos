@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import html2canvas from 'html2canvas';
 
-// Data default produk Racikin (Langsung tertanam otomatis di aplikasi)
+// Data lengkap seluruh menu Pricelist Racikin
 const DEFAULT_PRODUCTS = [
+  // Paket Ekonomis
   { id: 1, name: "Sayur Bayam", price: 5000, category: "Paket Ekonomis" },
   { id: 2, name: "Tumis Kangkung", price: 5000, category: "Paket Ekonomis" },
   { id: 3, name: "Tumis Sawi Hijau", price: 5000, category: "Paket Ekonomis" },
@@ -22,12 +23,47 @@ const DEFAULT_PRODUCTS = [
   { id: 17, name: "Cabe Rawit Ekonomis", price: 10000, category: "Paket Ekonomis" },
   { id: 18, name: "Cabe & Tomat Ekonomis", price: 10000, category: "Paket Ekonomis" },
   { id: 19, name: "Sambal Ekonomis", price: 10000, category: "Paket Ekonomis" },
-  { id: 20, name: "Sayur Asem", price: 12000, category: "Paket Premium" },
-  { id: 21, name: "Sayur Lodeh", price: 12000, category: "Paket Premium" },
-  { id: 22, name: "Sop Ayam Bening", price: 15000, category: "Paket Premium" },
-  { id: 23, name: "Soto Ayam", price: 15000, category: "Paket Premium" },
-  { id: 24, name: "Tumis Daging Sapi Iris", price: 25000, category: "Paket Signature" },
-  { id: 25, name: "Ayam Goreng Lengkuas", price: 20000, category: "Paket Signature" }
+  { id: 20, name: "Bawang Putih Kupas", price: 10000, category: "Paket Ekonomis" },
+  { id: 21, name: "Bawang Merah Kupas", price: 10000, category: "Paket Ekonomis" },
+  { id: 22, name: "Bawang Kupas Mix Ekonomis", price: 12000, category: "Paket Ekonomis" },
+  { id: 23, name: "Bawang Mix Ekonomis", price: 12000, category: "Paket Ekonomis" },
+  { id: 24, name: "Tempe Orek", price: 15000, category: "Paket Ekonomis" },
+  { id: 25, name: "Tempe Tepung", price: 15000, category: "Paket Ekonomis" },
+
+  // Paket Premium
+  { id: 26, name: "Bakwan Jagung", price: 12000, category: "Paket Premium" },
+  { id: 27, name: "Tumis Toge Tempe", price: 12000, category: "Paket Premium" },
+  { id: 28, name: "Sambal Premium", price: 15000, category: "Paket Premium" },
+  { id: 29, name: "Sayur Bayam", price: 15000, category: "Paket Premium" },
+  { id: 30, name: "Tumis Kangkung", price: 15000, category: "Paket Premium" },
+  { id: 31, name: "Tumis Sawi Hijau Tahu Bakso", price: 15000, category: "Paket Premium" },
+  { id: 32, name: "Tumis Sawi Putih Tahu Bakso", price: 15000, category: "Paket Premium" },
+  { id: 33, name: "Tumis Pakcoy Tahu Bakso", price: 15000, category: "Paket Premium" },
+  { id: 34, name: "Sayur Sop Bakso", price: 15000, category: "Paket Premium" },
+  { id: 35, name: "Capcay Bakso", price: 15000, category: "Paket Premium" },
+  { id: 36, name: "Tumis Wortel Buncis Jagung Bakso", price: 15000, category: "Paket Premium" },
+  { id: 37, name: "Tumis Toge Tahu Bakso", price: 15000, category: "Paket Premium" },
+  { id: 38, name: "Tumis Buncis Bakso", price: 15000, category: "Paket Premium" },
+  { id: 39, name: "Sayur Asem", price: 15000, category: "Paket Premium" },
+  { id: 40, name: "Sayur Lodeh", price: 15000, category: "Paket Premium" },
+  { id: 41, name: "Bakwan Sayur", price: 15000, category: "Paket Premium" },
+  { id: 42, name: "Sayur Sop Kimlo Bakso", price: 18000, category: "Paket Premium" },
+  { id: 43, name: "Brokoli Wortel Bakso", price: 18000, category: "Paket Premium" },
+  { id: 44, name: "Bawang Kupas Mix Premium", price: 20000, category: "Paket Premium" },
+
+  // Paket Signature
+  { id: 45, name: "Terong Balado", price: 12000, category: "Paket Signature (RTC)" },
+  { id: 46, name: "Teri Tempe Balado", price: 20000, category: "Paket Signature (RTC)" },
+  { id: 47, name: "Ikan Lele Marinasi", price: 28000, category: "Paket Signature (RTC)" },
+  { id: 48, name: "Ikan Nila Marinasi", price: 28000, category: "Paket Signature (RTC)" },
+  { id: 49, name: "Tumis Kikil Kacang Panjang", price: 28000, category: "Paket Signature (RTC)" },
+  { id: 50, name: "Ayam Bumbu Teriyaki", price: 30000, category: "Paket Signature (RTC)" },
+  { id: 51, name: "Ayam Bumbu Wijen", price: 30000, category: "Paket Signature (RTC)" },
+  { id: 52, name: "Ayam Bumbu Lada Hitam", price: 35000, category: "Paket Signature (RTC)" },
+  { id: 53, name: "Ikan Tongkol Kemangi", price: 38000, category: "Paket Signature (RTC)" },
+  { id: 54, name: "Teri Tempe Kacang Balado", price: 38000, category: "Paket Signature (RTC)" },
+  { id: 55, name: "Ayam Ungkep Lengkuas", price: 40000, category: "Paket Signature (RTC)" },
+  { id: 56, name: "Ayam Bumbu Ketumbar", price: 40000, category: "Paket Signature (RTC)" }
 ];
 
 export default function App() {
@@ -306,7 +342,7 @@ export default function App() {
 
             <div className="flex flex-col gap-3">
               <p className="text-xs text-slate-500">
-                Menu lengkap Racikin sudah tertanam otomatis di dalam aplikasi dan siap digunakan di HP maupun komputer.
+                Seluruh 56 menu lengkap Racikin (Ekonomis, Premium, & Signature) sudah tertanam otomatis dan siap digunakan.
               </p>
               <div className="bg-blue-50 border border-blue-100 p-3 rounded-xl text-xs text-blue-800">
                 <span className="font-bold">Total menu aktif:</span> {products.length} item.
