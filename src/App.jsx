@@ -203,7 +203,7 @@ export default function App() {
       {/* HEADER DENGAN LOGO */}
       <header className="bg-blue-600 text-white p-4 shadow-md flex justify-between items-center sticky top-0 z-20">
         <div className="flex items-center gap-3">
-          <img src="/logo.png" alt="Logo Toko" className="w-10 h-10 object-contain rounded-full bg-white p-0.5 shadow" />
+          <img src="/Gayeman Logo 1.jpg" alt="Logo Toko" className="w-10 h-10 object-contain rounded-full bg-white p-0.5 shadow" />
           <div>
             <h1 className="text-lg md:text-xl font-bold">TOKO GAYEMAN.QU</h1>
             <p className="text-[11px] text-blue-100">Bukit Ayana Ciomas Blok B2/30</p>
@@ -445,7 +445,7 @@ export default function App() {
       <div style={{ position: 'absolute', top: '-9999px', left: '-9999px' }}>
         <div ref={receiptRef} style={{ width: '380px', padding: '24px', background: '#ffffff', fontFamily: 'monospace', color: '#000' }}>
           <div style={{ textAlign: 'center', marginBottom: '16px' }}>
-            <img src="/logo.png" alt="Logo" style={{ width: '48px', height: '48px', objectFit: 'contain', margin: '0 auto 8px auto', display: 'block' }} />
+            <img src="/Gayeman Logo 1.jpg" alt="Logo" style={{ width: '48px', height: '48px', objectFit: 'contain', margin: '0 auto 8px auto', display: 'block' }} />
             <h2 style={{ fontSize: '18px', fontWeight: 'bold', margin: '0' }}>TOKO GAYEMAN.QU</h2>
             <p style={{ fontSize: '11px', margin: '4px 0' }}>Bukit Ayana Ciomas Blok B2/30</p>
             <p style={{ fontSize: '10px', color: '#555', margin: '0' }}>----------------------------------------</p>
