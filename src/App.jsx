@@ -474,7 +474,7 @@ export default function App() {
             <span>Rp {totalAmount.toLocaleString('id-ID')}</span>
           </div>
           <div style={{ textAlign: 'center', fontSize: '10px', color: '#555' }}>
-            <p style={{ margin: '0' }}>Terima kasih sudah berbelanja via online!</p>
+            <p style={{ margin: '0' }}>Terima kasih sudah berbelanja di TOKO GAYEMAN.QU!</p>
             <p style={{ margin: '2px 0' }}>Pesanan Anda akan segera disiapkan & dikirim.</p>
           </div>
         </div>
