@@ -173,12 +173,9 @@ export default function App() {
     }
     const text = generateWhatsAppText();
     let phone = customerPhone.trim();
-    
-    // Format nomor HP ke format internasional jika dimulai dengan 0
     if (phone.startsWith('0')) {
       phone = '62' + phone.slice(1);
     }
-    
     const encodedText = encodeURIComponent(text);
     const waUrl = phone ? `https://wa.me/${phone}?text=${encodedText}` : `https://wa.me/?text=${encodedText}`;
     window.open(waUrl, '_blank');
@@ -217,7 +214,7 @@ export default function App() {
 
       {/* MAIN CONTAINER */}
       <div className="flex-1 flex flex-col md:flex-row p-4 gap-4 max-w-7xl mx-auto w-full">
-        {/* KIRI: KATALOG PRODUK */}
+        {/* KIRI: KATALOG PRODUK (LIST VIEW) */}
         <div className="flex-1 flex flex-col gap-4">
           <div className="flex flex-col sm:flex-row gap-2">
             <input
@@ -225,7 +222,7 @@ export default function App() {
               placeholder="Cari menu Racikin..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="flex-1 p-2.5 border border-slate-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="flex-1 p-2.5 border border-slate-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
             />
           </div>
 
@@ -246,11 +243,11 @@ export default function App() {
             ))}
           </div>
 
-          {/* Grid Produk */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 overflow-y-auto max-h-[60vh] p-1">
+          {/* List Produk (Bentuk Baris Memanjang ke Bawah) */}
+          <div className="flex flex-col gap-2 overflow-y-auto max-h-[60vh] pr-1">
             {filteredProducts.length === 0 ? (
-              <div className="col-span-full text-center py-10 text-slate-400 bg-white rounded-xl border border-dashed border-slate-300 p-6">
-                <p className="font-medium">Menu tidak ditemukan.</p>
+              <div className="text-center py-10 text-slate-400 bg-white rounded-xl border border-dashed border-slate-300 p-6">
+                <p className="font-medium text-sm">Menu tidak ditemukan.</p>
               </div>
             ) : (
               filteredProducts.map((p) => {
@@ -259,16 +256,19 @@ export default function App() {
                   <div
                     key={p.id}
                     onClick={() => addToCart(p)}
-                    className="bg-white p-3 rounded-xl border border-slate-200 shadow-sm hover:shadow-md cursor-pointer transition flex flex-col justify-between active:scale-95"
+                    className="bg-white p-3 rounded-xl border border-slate-200 shadow-sm hover:shadow-md cursor-pointer transition flex justify-between items-center active:scale-[0.99]"
                   >
-                    <div>
-                      <span className="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded font-medium">
+                    <div className="flex flex-col gap-1 pr-2">
+                      <span className="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded font-medium w-fit">
                         {p.category}
                       </span>
-                      <h3 className="font-semibold text-sm mt-1.5 line-clamp-2">{p.name}</h3>
+                      <h3 className="font-semibold text-sm text-slate-800">{p.name}</h3>
                     </div>
-                    <div className="mt-3 text-blue-600 font-bold text-sm">
-                      Rp {pPrice.toLocaleString('id-ID')}
+                    <div className="text-right">
+                      <div className="text-blue-600 font-bold text-sm">
+                        Rp {pPrice.toLocaleString('id-ID')}
+                      </div>
+                      <span className="text-[10px] text-slate-400 font-medium">+ Tambah</span>
                     </div>
                   </div>
                 );
@@ -437,7 +437,7 @@ export default function App() {
             <span>Rp {totalAmount.toLocaleString('id-ID')}</span>
           </div>
           <div style={{ textAlign: 'center', fontSize: '10px', color: '#555' }}>
-            <p style={{ margin: '0' }}>Terima kasih sudah berbelanja di TOKO GAYEMAN.QU!</p>
+            <p style={{ margin: '0' }}>Terima kasih sudah berbelanja via online!</p>
             <p style={{ margin: '2px 0' }}>Pesanan Anda akan segera disiapkan & dikirim.</p>
           </div>
         </div>
