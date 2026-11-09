@@ -68,7 +68,6 @@ const DEFAULT_PRODUCTS = [
 
 export default function App() {
   const [products, setProducts] = useState(() => {
-    // Selalu paksa muat ulang default jika jumlah data kurang dari 56 atau kosong
     try {
       const saved = localStorage.getItem('gayeman_products');
       const parsed = saved ? JSON.parse(saved) : [];
@@ -84,6 +83,7 @@ export default function App() {
 
   const [cart, setCart] = useState([]);
   const [customerName, setCustomerName] = useState('');
+  const [customerPhone, setCustomerPhone] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Semua');
   const [isManageOpen, setIsManageOpen] = useState(false);
@@ -134,12 +134,7 @@ export default function App() {
     return matchesSearch && matchesCategory;
   });
 
-  const handleCopyWhatsApp = () => {
-    if (cart.length === 0) {
-      alert('Keranjang masih kosong!');
-      return;
-    }
-
+  const generateWhatsAppText = () => {
     let text = `*TOKO GAYEMAN.QU*\nBukit Ayana Ciomas Blok B2/30\n`;
     text += `-----------------------------------\n`;
     text += `Pelanggan: *${customerName || 'Umum'}*\n`;
@@ -156,10 +151,37 @@ export default function App() {
     text += `\n-----------------------------------\n`;
     text += `*TOTAL: Rp ${totalAmount.toLocaleString('id-ID')}*\n`;
     text += `-----------------------------------\n`;
-    text += `Terima kasih sudah berbelanja di Toko Gayeman.Qu! 🙏`;
+    text += `Terima kasih sudah berbelanja via online di Toko Gayeman.Qu! 🙏\n`;
+    text += `Pesanan Anda akan segera disiapkan & dikirim.`;
+    return text;
+  };
 
+  const handleCopyWhatsApp = () => {
+    if (cart.length === 0) {
+      alert('Keranjang masih kosong!');
+      return;
+    }
+    const text = generateWhatsAppText();
     navigator.clipboard.writeText(text);
-    alert('Rincian struk berhasil disalin! Silakan tempel (Paste / Ctrl+V) di chat WhatsApp pembeli.');
+    alert('Rincian struk berhasil disalin! Silakan tempel (Paste / Ctrl+V) di chat WhatsApp.');
+  };
+
+  const handleDirectSendWhatsApp = () => {
+    if (cart.length === 0) {
+      alert('Keranjang masih kosong!');
+      return;
+    }
+    const text = generateWhatsAppText();
+    let phone = customerPhone.trim();
+    
+    // Format nomor HP ke format internasional jika dimulai dengan 0
+    if (phone.startsWith('0')) {
+      phone = '62' + phone.slice(1);
+    }
+    
+    const encodedText = encodeURIComponent(text);
+    const waUrl = phone ? `https://wa.me/${phone}?text=${encodedText}` : `https://wa.me/?text=${encodedText}`;
+    window.open(waUrl, '_blank');
   };
 
   const handleSaveReceiptImage = async () => {
@@ -260,21 +282,33 @@ export default function App() {
           <div>
             <h2 className="font-bold text-base mb-3 border-b pb-2 text-slate-700">🛒 Keranjang Belanja</h2>
             
-            <div className="mb-3">
-              <label className="text-xs text-slate-500 font-medium block mb-1">Nama Pelanggan:</label>
-              <input
-                type="text"
-                placeholder="Nama Pembeli (Opsional)"
-                value={customerName}
-                onChange={(e) => setCustomerName(e.target.value)}
-                className="w-full p-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+            <div className="flex flex-col gap-2 mb-3">
+              <div>
+                <label className="text-xs text-slate-500 font-medium block mb-1">Nama Pelanggan:</label>
+                <input
+                  type="text"
+                  placeholder="Nama Pembeli (Opsional)"
+                  value={customerName}
+                  onChange={(e) => setCustomerName(e.target.value)}
+                  className="w-full p-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-slate-500 font-medium block mb-1">No. WhatsApp Pelanggan:</label>
+                <input
+                  type="text"
+                  placeholder="Contoh: 08123456789 (Opsional)"
+                  value={customerPhone}
+                  onChange={(e) => setCustomerPhone(e.target.value)}
+                  className="w-full p-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
             </div>
 
             {/* List Item Keranjang */}
-            <div className="flex flex-col gap-2 max-h-[35vh] overflow-y-auto pr-1">
+            <div className="flex flex-col gap-2 max-h-[30vh] overflow-y-auto pr-1">
               {cart.length === 0 ? (
-                <p className="text-center text-slate-400 text-xs py-8">Keranjang masih kosong. Pilih menu di samping.</p>
+                <p className="text-center text-slate-400 text-xs py-6">Keranjang masih kosong. Pilih menu di samping.</p>
               ) : (
                 cart.map((item) => {
                   const itemPrice = Number(item.price) || 0;
@@ -306,14 +340,20 @@ export default function App() {
 
             <div className="flex flex-col gap-2">
               <button
-                onClick={handleCopyWhatsApp}
+                onClick={handleDirectSendWhatsApp}
                 className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-lg font-medium text-sm transition shadow flex items-center justify-center gap-2 cursor-pointer"
               >
-                📋 Salin Rincian ke WhatsApp
+                🚀 Kirim Langsung via WhatsApp
+              </button>
+              <button
+                onClick={handleCopyWhatsApp}
+                className="w-full bg-slate-700 hover:bg-slate-800 text-white py-2 rounded-lg font-medium text-xs transition shadow flex items-center justify-center gap-2 cursor-pointer"
+              >
+                📋 Salin Teks Saja
               </button>
               <button
                 onClick={handleSaveReceiptImage}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-medium text-sm transition shadow flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium text-xs transition shadow flex items-center justify-center gap-2 cursor-pointer"
               >
                 📥 Simpan Struk as Gambar
               </button>
@@ -331,7 +371,7 @@ export default function App() {
               <button
                 onClick={() => {
                   setProducts(DEFAULT_PRODUCTS);
-                  localStorage.removeItem('gayeman_products');
+                  localStorage.setItem('gayeman_products', JSON.stringify(DEFAULT_PRODUCTS));
                   alert('Menu dikembalikan ke default Racikin!');
                 }}
                 className="text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded-md font-semibold hover:bg-slate-200 transition cursor-pointer"
@@ -397,8 +437,8 @@ export default function App() {
             <span>Rp {totalAmount.toLocaleString('id-ID')}</span>
           </div>
           <div style={{ textAlign: 'center', fontSize: '10px', color: '#555' }}>
-            <p style={{ margin: '0' }}>Terima Kasih Atas Kunjungan Anda!</p>
-            <p style={{ margin: '2px 0' }}>Barang yang sudah dibeli tidak dapat ditukar.</p>
+            <p style={{ margin: '0' }}>Terima kasih sudah berbelanja di TOKO GAYEMAN.QU!</p>
+            <p style={{ margin: '2px 0' }}>Pesanan Anda akan segera disiapkan & dikirim.</p>
           </div>
         </div>
       </div>
