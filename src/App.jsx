@@ -68,9 +68,15 @@ const DEFAULT_PRODUCTS = [
 
 export default function App() {
   const [products, setProducts] = useState(() => {
+    // Selalu paksa muat ulang default jika jumlah data kurang dari 56 atau kosong
     try {
       const saved = localStorage.getItem('gayeman_products');
-      return saved ? JSON.parse(saved) : DEFAULT_PRODUCTS;
+      const parsed = saved ? JSON.parse(saved) : [];
+      if (!parsed || parsed.length < 56) {
+        localStorage.setItem('gayeman_products', JSON.stringify(DEFAULT_PRODUCTS));
+        return DEFAULT_PRODUCTS;
+      }
+      return parsed;
     } catch {
       return DEFAULT_PRODUCTS;
     }
